@@ -22,11 +22,11 @@ const Cliente = {
       'UPDATE clientes SET nome = $1, email = $2, telefone = $3, endereco = $4, senha = $5 WHERE id = $6 RETURNING *', //Executa uma query SQL para atualizar o cliente com o ID fornecido.
       [nome, email, telefone, endereco, senha, id]
     );
-    return result.rows[0];
+    return result.rows[0]; // Retorna a primeira linha do resultado, que é o cliente atualizado 
   },
-  async delete(id) {
-    const result = await db.query('DELETE FROM clientes WHERE id = $1 RETURNING *', [id]);
-    return result.rows[0];
+  async delete(id) { // Recebe o parâmetro `id` do cliente
+    const result = await db.query('DELETE FROM clientes WHERE id = $1 RETURNING *', [id]); // Executa a query SQL
+    return result.rows[0]; //Retorn a primeira linha do resultado [0], que é o cliente deletado 
   }
 };
 
