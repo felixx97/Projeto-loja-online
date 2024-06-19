@@ -1,7 +1,22 @@
+const Joi = require('joi');
 const Produto = require('../models/produto');
 
+const produtoSchema = Joi.object({
+  titulo: Joi.string().required(),
+  artista: Joi.string().required(),
+  genero: Joi.string().required(),
+  tipo: Joi.string().valid('Vinil', 'CD').required(),
+  preco: Joi.number().positive().required(),
+  estoque: Joi.number().integer().min(0).required()
+});
+
 const createProduto = async (request, h) => {
-  const { titulo, artista, genero, tipo, preco, estoque } = request.payload;
+  const { error, value } = produtoSchema.validate(request.payload);
+  if (error) {
+    return h.response({ error: error.details[0].message }).code(400);
+  }
+
+  const { titulo, artista, genero, tipo, preco, estoque } = value; // Ajuste aqui
   try {
     const produto = await Produto.create(titulo, artista, genero, tipo, preco, estoque);
     return h.response(produto).code(201);
@@ -37,7 +52,12 @@ const getProdutoById = async (request, h) => {
 
 const updateProduto = async (request, h) => {
   const id = request.params.id;
-  const { titulo, artista, genero, tipo, preco, estoque } = request.payload;
+  const { error, value } = produtoSchema.validate(request.payload);
+  if (error) {
+    return h.response({ error: error.details[0].message }).code(400);
+  }
+
+  const { titulo, artista, genero, tipo, preco, estoque } = value;
   try {
     const produto = await Produto.update(id, titulo, artista, genero, tipo, preco, estoque);
     if (!produto) {
