@@ -15,6 +15,20 @@ const init = async () => {
     host: 'localhost'
   });
 
+  // Registrar uma extensão para adicionar cabeçalhos CORS
+  server.ext('onPreResponse', (request, h) => {
+    const response = request.response;
+    if (!response.isBoom) {  // Para respostas bem-sucedidas
+      response.headers['Access-Control-Allow-Origin'] = '*';
+      response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+    } else {  // Para respostas de erro
+      response.output.headers['Access-Control-Allow-Origin'] = '*';
+      response.output.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+    }
+    return h.continue;
+  });
+
+  // Adicionar as rotas
   server.route(clienteRoutes);
   server.route(produtoRoutes);
   server.route(pedidoRoutes);
