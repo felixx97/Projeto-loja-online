@@ -1,107 +1,44 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
 const AddProduct = () => {
   const [product, setProduct] = useState({
     titulo: '',
     artista: '',
     genero: '',
-    tipo: '',
+    tipo: 'CD',
     preco: '',
     estoque: ''
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setProduct({ ...product, [name]: value });
+    setProduct({ ...product, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/products', {
-        ...product,
-        preco: parseFloat(product.preco),
-        estoque: parseInt(product.estoque, 10)
+      const response = await axios.post('http://localhost:4000/products', product, {
       });
-      console.log('Produto adicionado:', response.data);
+      console.log('Product added:', response.data);
     } catch (error) {
-      console.error('Erro na requisição:', error);
+      console.error('Error adding product:', error);
     }
   };
 
   return (
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 5 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Adicionar Produto
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            label="Título"
-            name="titulo"
-            value={product.titulo}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            label="Artista"
-            name="artista"
-            value={product.artista}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            label="Gênero"
-            name="genero"
-            value={product.genero}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            label="Tipo"
-            name="tipo"
-            value={product.tipo}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            label="Preço"
-            name="preco"
-            type="number"
-            value={product.preco}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            label="Estoque"
-            name="estoque"
-            type="number"
-            value={product.estoque}
-            onChange={handleChange}
-            fullWidth
-            margin="normal"
-            required
-          />
-          <Box sx={{ mt: 2 }}>
-            <Button type="submit" variant="contained" color="primary" fullWidth>
-              Adicionar Produto
-            </Button>
-          </Box>
-        </form>
-      </Box>
-    </Container>
+    <form onSubmit={handleSubmit}>
+      <input type="text" name="titulo" value={product.titulo} onChange={handleChange} placeholder="Titulo" required />
+      <input type="text" name="artista" value={product.artista} onChange={handleChange} placeholder="Artista" required />
+      <input type="text" name="genero" value={product.genero} onChange={handleChange} placeholder="Genero" required />
+      <select name="tipo" value={product.tipo} onChange={handleChange} required>
+        <option value="CD">CD</option>
+        <option value="Vinil">Vinil</option>
+      </select>
+      <input type="number" name="preco" value={product.preco} onChange={handleChange} placeholder="Preco" required />
+      <input type="number" name="estoque" value={product.estoque} onChange={handleChange} placeholder="Estoque" required />
+      <button type="submit">Add Product</button>
+    </form>
   );
 };
 

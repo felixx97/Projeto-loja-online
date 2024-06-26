@@ -1,6 +1,5 @@
 const Hapi = require('@hapi/hapi');
 const dotenv = require('dotenv');
-const hapiCorsHeaders = require('hapi-cors-headers');
 
 dotenv.config();
 
@@ -12,12 +11,16 @@ const notaPedidoRoutes = require('./routes/notaPedidoRoutes');
 
 const init = async () => {
   const server = Hapi.server({
-    port: 3000,
-    host: 'localhost'
+    port: 4000,
+    host: 'localhost',
+    routes: {
+      cors: {
+        origin: ['http://localhost:5173'],
+        headers: ['Accept', 'Content-Type'],
+        additionalHeaders: ['X-Requested-With']
+      }
+    }
   });
-
-  // Adicionando suporte a CORS
-  server.ext('onPreResponse', hapiCorsHeaders);
 
   server.route(clienteRoutes);
   server.route(produtoRoutes);
@@ -30,7 +33,7 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-  console.log(err);
+  console.log('Unhandled Rejection:', err);
   process.exit(1);
 });
 
