@@ -7,7 +7,9 @@ const produtoSchema = Joi.object({
   genero: Joi.string().required(),
   tipo: Joi.string().valid('Vinil', 'CD').required(),
   preco: Joi.number().positive().required(),
-  estoque: Joi.number().integer().min(0).required()
+  estoque: Joi.number().integer().min(0).required(),
+  capa: Joi.string().uri().optional(),
+  teaser: Joi.string().uri().optional()
 });
 
 const createProduto = async (request, h) => {
@@ -19,9 +21,9 @@ const createProduto = async (request, h) => {
     return h.response({ error: error.details[0].message }).code(400);
   }
 
-  const { titulo, artista, genero, tipo, preco, estoque } = value;
+  const { titulo, artista, genero, tipo, preco, estoque, capa, teaser } = value;
   try {
-    const produto = await Produto.create(titulo, artista, genero, tipo, preco, estoque);
+    const produto = await Produto.create(titulo, artista, genero, tipo, preco, estoque, capa, teaser);
     console.log("Produto criado:", produto); // Log do produto criado
     return h.response(produto).code(201);
   } catch (err) {
@@ -65,9 +67,9 @@ const updateProduto = async (request, h) => {
     return h.response({ error: error.details[0].message }).code(400);
   }
 
-  const { titulo, artista, genero, tipo, preco, estoque } = value;
+  const { titulo, artista, genero, tipo, preco, estoque, capa, teaser } = value;
   try {
-    const produto = await Produto.update(id, titulo, artista, genero, tipo, preco, estoque);
+    const produto = await Produto.update(id, titulo, artista, genero, tipo, preco, estoque, capa, teaser);
     if (!produto) {
       console.log("Produto não encontrado para atualização:", id); // Log de produto não encontrado para atualização
       return h.response({ error: 'Produto não encontrado' }).code(404);
